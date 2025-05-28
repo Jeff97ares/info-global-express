@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <title>Info Global Express</title>
+</head>
+<body>
+  <h1>Info Global Express</h1>
+  <p>Ingresa un país:</p>
+  <input type="text" id="pais" placeholder="Ej: Ecuador" />
+  <button onclick="consultar()">Buscar</button>
+
+  <div id="resultado" style="margin-top: 20px;"></div>
+
+  <script>
+    async function consultar() {
+      const pais = document.getElementById('pais').value.toLowerCase();
+      const resultadoDiv = document.getElementById('resultado');
+      resultadoDiv.innerHTML = 'Cargando...';
+
+      try {
+        const res = await fetch(`http://localhost:3000/info/${pais}`);
+        const data = await res.json();
+
+        if (data.error) throw new Error(data.error);
+
+        resultadoDiv.innerHTML = `
+          <h3>${data.country}</h3>
+          <p><strong>Capital:</strong> ${data.capital}</p>
+          <p><strong>Clima:</strong> ${data.weather}</p>
+          <p><strong>Moneda:</strong> ${data.currency}</p>
+          <p><strong>Tipo de cambio a USD:</strong> ${data.exchangeRateToUSD}</p>
+        `;
+      } catch (error) {
+        resultadoDiv.innerHTML = `<p style="color: red;">❌ Error: ${error.message}</p>`;
+      }
+    }
+  </script>
+</body>
+</html>
